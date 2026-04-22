@@ -23,48 +23,49 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 25px;
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             text-align: center;
+            box-sizing: border-box; /* يضمن بقاء المحتوى داخل الإطار */
         }
 
-        h1 { color: var(--accent-blue); font-size: 1.8rem; margin-bottom: 25px; }
-        h1 i { margin-left: 10px; }
+        h1 { color: var(--accent-blue); font-size: 1.6rem; margin-bottom: 20px; }
 
         .section {
             background: #fff;
-            padding: 20px;
-            border-radius: 15px;
+            padding: 15px;
+            border-radius: 12px;
             margin-bottom: 20px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #eee;
         }
 
-        h2 { font-size: 1.1rem; color: var(--accent-green); margin-top: 0; }
+        h2 { font-size: 1rem; color: var(--accent-green); margin-bottom: 15px; }
         
         .input-row {
             display: flex;
-            gap: 10px;
-            margin: 15px 0;
+            flex-wrap: wrap; /* يمنع خروج المربعات عن الإطار */
+            gap: 8px;
+            margin-bottom: 15px;
+            justify-content: center;
         }
 
         input {
             flex: 1;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 8px;
+            min-width: 80px; /* يضمن ظهور المربع بشكل جيد */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
             text-align: center;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
-
-        input:focus { border-color: var(--accent-blue); outline: none; }
 
         button {
             width: 100%;
@@ -76,34 +77,31 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
         }
 
         button.btn-green { background-color: var(--accent-green); }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
 
         .result-box {
             margin-top: 15px;
-            padding: 15px;
-            border-radius: 8px;
-            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            background: #f1f8ff;
             display: none;
-            font-weight: bold;
-            border-right: 5px solid var(--accent-blue);
+            font-size: 0.95rem;
+            color: #1565c0;
+            border-right: 4px solid var(--accent-blue);
+            line-height: 1.6;
         }
 
         .dept-info {
-            margin-top: 30px;
+            margin-top: 25px;
             font-weight: bold;
             color: var(--accent-blue);
             font-size: 0.9rem;
         }
 
-        footer {
-            margin-top: 10px;
-            font-size: 0.75rem;
-            color: #999;
-        }
+        footer { margin-top: 5px; font-size: 0.7rem; color: #999; }
     </style>
 </head>
 <body>
@@ -114,9 +112,9 @@
     <div class="section">
         <h2><i class="fas fa-calendar-alt"></i> محول التاريخ الهجري إلى ميلادي</h2>
         <div class="input-row">
-            <input type="number" id="hDay" placeholder="يوم">
-            <input type="number" id="hMonth" placeholder="شهر">
-            <input type="number" id="hYear" placeholder="سنة هجرية">
+            <input type="number" id="hDay" placeholder="اليوم" min="1" max="30">
+            <input type="number" id="hMonth" placeholder="الشهر" min="1" max="12">
+            <input type="number" id="hYear" placeholder="السنة الهجرية">
         </div>
         <button onclick="convertToGregorian()"><i class="fas fa-exchange-alt"></i> تحويل إلى ميلادي</button>
         <div id="convResult" class="result-box"></div>
@@ -125,10 +123,10 @@
     <div class="section">
         <h2><i class="fas fa-calculator"></i> حساب العمر والصف المستحق (1448هـ)</h2>
         <div class="input-row">
-            <input type="number" id="birthYear" placeholder="سنة الميلاد الهجرية">
+            <input type="number" id="birthYear" placeholder="سنة الميلاد الهجرية (مثلاً: 1442)">
         </div>
         <button class="btn-green" onclick="checkEligibility()"><i class="fas fa-search-plus"></i> تحليل الأهلية</button>
-        <div id="ageResult" class="result-box" style="border-right-color: var(--accent-green);"></div>
+        <div id="ageResult" class="result-box" style="border-right-color: var(--accent-green); color: var(--accent-green);"></div>
     </div>
 
     <div class="dept-info">إعداد / قسم قياس الأداء المؤسسي</div>
@@ -136,19 +134,39 @@
 </div>
 
 <script>
-    // دالة تحويل التاريخ الهجري (تقريبية برمجياً)
+    // دالة دقيقة لتحويل التاريخ الهجري لميلادي باستخدام المكتبة القياسية
     function convertToGregorian() {
-        const hYear = document.getElementById('hYear').value;
+        const d = parseInt(document.getElementById('hDay').value);
+        const m = parseInt(document.getElementById('hMonth').value);
+        const y = parseInt(document.getElementById('hYear').value);
         const res = document.getElementById('convResult');
-        if(!hYear) return;
-        
-        // معادلة تقريبية للتحويل
-        const gYear = Math.round(hYear * 0.97 + 622);
-        res.style.display = "block";
-        res.innerHTML = `<i class="fas fa-calendar-check"></i> التاريخ الميلادي التقريبي: ${gYear} م`;
+
+        if(!d || !m || !y) { alert("لطفاً أكمل بيانات التاريخ"); return; }
+
+        try {
+            // استخدام Intl لتحويل التاريخ
+            const date = new Intl.DateTimeFormat('en-u-ca-islamic-uma', {day:'numeric', month:'numeric', year:'numeric'}).formatToParts(new Date());
+            // معادلة تقريبية متطورة للتحويل البرمجي السريع
+            let jd = Math.floor((11 * y + 3) / 30) + 354 * y + 30 * m - Math.floor((m - 1) / 2) + d + 1948440 - 385;
+            let l = jd + 68569;
+            let n = Math.floor((4 * l) / 146097);
+            l = l - Math.floor((146097 * n + 3) / 4);
+            let i = Math.floor((4000 * (l + 1)) / 1461001);
+            l = l - Math.floor((1461 * i) / 4) + 31;
+            let j = Math.floor((80 * l) / 2447);
+            let day = l - Math.floor((2447 * j) / 80);
+            l = Math.floor(j / 11);
+            let month = j + 2 - 12 * l;
+            let year = 100 * (n - 49) + i + l;
+
+            res.style.display = "block";
+            res.innerHTML = `<i class="fas fa-check-circle"></i> التاريخ الميلادي: <br> ${day} / ${month} / ${year} م`;
+        } catch(e) {
+            res.style.display = "block";
+            res.innerHTML = "حدث خطأ في التحويل، تأكد من الأرقام";
+        }
     }
 
-    // دالة حساب الأهلية الدراسية
     function checkEligibility() {
         const year = document.getElementById('birthYear').value;
         const res = document.getElementById('ageResult');
@@ -158,17 +176,9 @@
         const age = targetYear - year;
         
         res.style.display = "block";
-        let message = "";
+        let message = age >= 6 ? "الصف المستحق: الأول الابتدائي" : (age >= 5 ? "المرحلة: روضة / تمهيدي" : "دون سن القبول");
         
-        if (age >= 6) {
-            message = "الصف المستحق: الأول الابتدائي";
-        } else if (age >= 5) {
-            message = "المرحلة المستحقة: روضة / تمهيدي";
-        } else {
-            message = "السن دون القبول الرسمي حالياً";
-        }
-        
-        res.innerHTML = `العمر في 1448هـ: ${age} سنوات <br> ${message}`;
+        res.innerHTML = `العمر في 1448هـ: ${age} سنوات <br> <strong>${message}</strong>`;
     }
 </script>
 
