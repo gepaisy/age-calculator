@@ -3,132 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة العمر التعليمية | سالم الفاهمي</title>
+    <title>حاسبة أعمار الطلاب المستجدين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-gold: #d4af37;
-            --dark-bg: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #e0e0e0;
+            --primary-blue: #e3f2fd;
+            --secondary-green: #e8f5e9;
+            --accent-blue: #1976d2;
+            --accent-green: #2e7d32;
+            --text-main: #37474f;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-color);
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-green));
+            color: var(--text-main);
+            min-height: 100vh;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            padding: 20px;
         }
 
-        .calculator-card {
-            background-color: var(--card-bg);
-            padding: 2rem;
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid #333;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             text-align: center;
         }
 
-        h1 { color: var(--primary-gold); margin-bottom: 0.5rem; font-size: 1.5rem; }
-        p.subtitle { color: #888; font-size: 0.9rem; margin-bottom: 2rem; }
+        h1 { color: var(--accent-blue); font-size: 1.8rem; margin-bottom: 25px; }
+        h1 i { margin-left: 10px; }
 
-        .input-group {
+        .section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        h2 { font-size: 1.1rem; color: var(--accent-green); margin-top: 0; }
+        
+        .input-row {
             display: flex;
             gap: 10px;
-            margin-bottom: 1.5rem;
+            margin: 15px 0;
         }
 
         input {
             flex: 1;
             padding: 12px;
+            border: 2px solid #eee;
             border-radius: 8px;
-            border: 1px solid #444;
-            background-color: #2a2a2a;
-            color: white;
             text-align: center;
             font-size: 1rem;
         }
 
-        input:focus { border-color: var(--primary-gold); outline: none; }
+        input:focus { border-color: var(--accent-blue); outline: none; }
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             border: none;
-            border-radius: 10px;
-            background: linear-gradient(45deg, #af891a, #d4af37);
-            color: #121212;
+            border-radius: 8px;
+            background-color: var(--accent-blue);
+            color: white;
+            font-size: 1rem;
             font-weight: bold;
-            font-size: 1.1rem;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: 0.3s;
         }
 
-        button:hover { transform: scale(1.02); }
+        button.btn-green { background-color: var(--accent-green); }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        #result {
-            margin-top: 2rem;
+        .result-box {
+            margin-top: 15px;
             padding: 15px;
-            border-radius: 10px;
-            background-color: #252525;
+            border-radius: 8px;
+            background: #f9f9f9;
             display: none;
-            border-right: 4px solid var(--primary-gold);
+            font-weight: bold;
+            border-right: 5px solid var(--accent-blue);
         }
 
-        footer { margin-top: 2rem; font-size: 0.8rem; color: #555; }
+        .dept-info {
+            margin-top: 30px;
+            font-weight: bold;
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: #999;
+        }
     </style>
 </head>
 <body>
 
-<div class="calculator-card">
-    <h1>حاسبة الأهلية الدراسية</h1>
-    <p class="subtitle">إعداد: سالم الفاهمي (أبو محمد)</p>
-    
-    <div class="input-group">
-        <input type="number" id="day" placeholder="يوم" min="1" max="31">
-        <input type="number" id="month" placeholder="شهر" min="1" max="12">
-        <input type="number" id="year" placeholder="سنة (هجري)" min="1430" max="1450">
+<div class="container">
+    <h1><i class="fas fa-user-graduate"></i> حاسبة أعمار الطلاب المستجدين</h1>
+
+    <div class="section">
+        <h2><i class="fas fa-calendar-alt"></i> محول التاريخ الهجري إلى ميلادي</h2>
+        <div class="input-row">
+            <input type="number" id="hDay" placeholder="يوم">
+            <input type="number" id="hMonth" placeholder="شهر">
+            <input type="number" id="hYear" placeholder="سنة هجرية">
+        </div>
+        <button onclick="convertToGregorian()"><i class="fas fa-exchange-alt"></i> تحويل إلى ميلادي</button>
+        <div id="convResult" class="result-box"></div>
     </div>
 
-    <button onclick="calculateEligibility()">تحليل الأهلية</button>
-
-    <div id="result">
-        <div id="ageText" style="margin-bottom: 10px; font-weight: bold;"></div>
-        <div id="gradeText" style="color: var(--primary-gold);"></div>
+    <div class="section">
+        <h2><i class="fas fa-calculator"></i> حساب العمر والصف المستحق (1448هـ)</h2>
+        <div class="input-row">
+            <input type="number" id="birthYear" placeholder="سنة الميلاد الهجرية">
+        </div>
+        <button class="btn-green" onclick="checkEligibility()"><i class="fas fa-search-plus"></i> تحليل الأهلية</button>
+        <div id="ageResult" class="result-box" style="border-right-color: var(--accent-green);"></div>
     </div>
 
+    <div class="dept-info">إعداد / قسم قياس الأداء المؤسسي</div>
     <footer>حقوق التصميم محفوظة © 2026</footer>
 </div>
 
 <script>
-    function calculateEligibility() {
-        const year = document.getElementById('year').value;
-        const resultDiv = document.getElementById('result');
-        const ageText = document.getElementById('ageText');
-        const gradeText = document.getElementById('gradeText');
+    // دالة تحويل التاريخ الهجري (تقريبية برمجياً)
+    function convertToGregorian() {
+        const hYear = document.getElementById('hYear').value;
+        const res = document.getElementById('convResult');
+        if(!hYear) return;
+        
+        // معادلة تقريبية للتحويل
+        const gYear = Math.round(hYear * 0.97 + 622);
+        res.style.display = "block";
+        res.innerHTML = `<i class="fas fa-calendar-check"></i> التاريخ الميلادي التقريبي: ${gYear} م`;
+    }
 
-        if(!year) { alert("لطفاً أدخل سنة الميلاد"); return; }
+    // دالة حساب الأهلية الدراسية
+    function checkEligibility() {
+        const year = document.getElementById('birthYear').value;
+        const res = document.getElementById('ageResult');
+        if(!year) return;
 
-        // حساب تقريبي بناءً على معايير عام 1448هـ
-        // ملاحظة: الحسابات هنا مبنية على سنة الميلاد الهجرية
         const targetYear = 1448;
         const age = targetYear - year;
-
-        resultDiv.style.display = "block";
-        ageText.innerText = "العمر التقريبي في 1448هـ: " + age + " سنوات";
-
+        
+        res.style.display = "block";
+        let message = "";
+        
         if (age >= 6) {
-            gradeText.innerText = "النتيجة: مستحق للالتحاق بالصف الأول الابتدائي";
+            message = "الصف المستحق: الأول الابتدائي";
         } else if (age >= 5) {
-            gradeText.innerText = "النتيجة: مستحق للالتحاق بمرحلة الروضة / تمهيدي";
+            message = "المرحلة المستحقة: روضة / تمهيدي";
         } else {
-            gradeText.innerText = "النتيجة: السن دون سن القبول الرسمي حالياً";
+            message = "السن دون القبول الرسمي حالياً";
         }
+        
+        res.innerHTML = `العمر في 1448هـ: ${age} سنوات <br> ${message}`;
     }
 </script>
 
